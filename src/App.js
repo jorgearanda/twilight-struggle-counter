@@ -3,45 +3,10 @@ import "./App.css";
 import Cards from "./Cards.js";
 import SessionStorage from "./SessionStorage.js";
 import { detect } from "detect-browser";
-import { Download, Load } from "./Save.js"
+import { Download, Load } from "./Save.js";
+import { Card } from "./Card";
 
 const { Map, fromJS } = require("immutable");
-
-// TODO limit undo history to a certain number of steps (30?)
-// game log?
-// view byregion
-// card count
-
-class Card extends Component {
-  render = () => {
-    return (
-      <li
-        className={"card " + this.props.side}
-        onClick={e => {
-          e.stopPropagation();
-          this.props.onNameClick(this.props.id);
-        }}
-      >
-        <i
-          className={"remove fas fa-ban" + (this.props.event ? "" : " hidden")}
-          onClick={e => {
-            e.stopPropagation();
-            this.props.onRemove(this.props.id);
-          }}
-        />
-        <i
-          className="discard fas fa-arrow-circle-down"
-          onClick={e => {
-            e.stopPropagation();
-            this.props.onDiscard(this.props.id);
-          }}
-        />
-        {this.props.ops == null ? <i className="score fas fa-star-half-alt" /> : "\u00A0" + this.props.ops}{" "}
-        {this.props.name}
-      </li>
-    );
-  };
-}
 
 // wish immutable would just export this.
 const defaultComparator = (a, b) => (a > b ? 1 : a < b ? -1 : 0);
@@ -456,7 +421,9 @@ class App extends Component {
     const content = [{ name: "removed", data: removes }, { name: "discarded", data: discards }].map(c => (
       <div key={c.name} id={c.name} className="cardCol">
         <fieldset>
-          <legend align="center">{c.name} ({c.data.count()})</legend>
+          <legend align="center">
+            {c.name} ({c.data.count()})
+          </legend>
           <ul>{c.data}</ul>
         </fieldset>
       </div>
@@ -513,12 +480,25 @@ class App extends Component {
       <div className="App">
         <div className="buttons">
           <div>
-            <label id="savebutton" htmlFor="myfile" >Load Game</label>
+            <label id="savebutton" htmlFor="myfile">
+              Load Game
+            </label>
 
-            <input onChange={(event) => Load.load(event.target.files, js => this.appSaveState(() => fromJS(js)))
-            } className="hidden" id="myfile" name="files[]" type="file"/>
+            <input
+              onChange={event => Load.load(event.target.files, js => this.appSaveState(() => fromJS(js)))}
+              className="hidden"
+              id="myfile"
+              name="files[]"
+              type="file"
+            />
 
-            <label id="loadbutton" htmlFor="save" onClick={() => Download.download(this.state.data.update("lastState", () => null))}>Save Game</label>
+            <label
+              id="loadbutton"
+              htmlFor="save"
+              onClick={() => Download.download(this.state.data.update("lastState", () => null))}
+            >
+              Save Game
+            </label>
 
             <button onClick={() => this.reset()}>reset</button>
             <button title="Note: cards in deck will be moved to opponent's hand" onClick={() => this.addDiscards()}>
