@@ -539,6 +539,18 @@ class App extends Component {
               undo
             </button>
           </div>
+          <div>
+            <label>
+              title
+              <input />
+            </label>
+          </div>
+          <div>
+            <label>
+              notes:
+              <textarea rows="10" cols="80" />
+            </label>
+          </div>
         </div>
         <div className="bothhands">
           <div className="hand lefthand">
